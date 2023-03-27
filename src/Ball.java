@@ -3,29 +3,32 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Ball {
-    protected int x;
-    protected int dx;
-    protected int y;
-    protected int dy;
-
-    public int radius = 8;
+    protected double x;
+    protected double dx;
+    protected double DEFAULT_DX=4;
+    protected double y;
+    protected double DEFAULT_DY=4;
+    protected double dy;
+    protected int radius = 5;
     protected boolean visible;
     protected boolean stick;
+    protected boolean interactable;
 
-    public Ball(int x, int y, int dx, int dy) {
+    public Ball(int x, int y) {
         this.x = x;
         this.y = y;
-        this.dx = dx;
-        this.dy = dy;
+        this.dx = DEFAULT_DX;
+        this.dy = DEFAULT_DY;
         visible = true;
         stick = true;
+        interactable = false;
     }
 
-    public int  getX() {
+    public double  getX() {
         return x;
     }
 
-    public int  getY() {
+    public double  getY() {
         return y;
     }
 
@@ -42,7 +45,7 @@ public class Ball {
     }
 
     public Rectangle getBounds() {
-        return new Rectangle(x, y, radius*2, radius*2);
+        return new Rectangle((int)x, (int)y, radius*2, radius*2);
     }
 
 }
