@@ -1,34 +1,40 @@
+import javax.swing.*;
 import java.awt.*;
-import javax.swing.ImageIcon;
-public class Paddle {
+
+public class Bonus {
     protected int x;
-    protected int dx;
     protected int y;
-    protected int width;
-    protected int height;
+    protected int dy = 3;
+    protected int id; // 0 - missiles, 1 - ....
+    public int width;
+    public int height;
+    protected boolean visible;
     protected Image image;
 
-    public Paddle(int x, int y, int dx) {
+    public Bonus(int x, int y, int id) {
         this.x = x;
-        this.dx = dx;
         this.y = y;
-        loadImage("src/resources/paddle_unarmed_60.png");
+        visible = true;
+        loadImage("src/resources/bonus_" + id + ".png");
         getImageDimensions();
     }
-
     public int  getX() {
         return x;
     }
-
     public int  getY() {
         return y;
     }
+    public boolean isVisible() {
+        return visible;
+    }
 
+    public void setVisible(Boolean visible) {
+        this.visible = visible;
+    }
     public Rectangle getBounds() {
         return new Rectangle(x, y, width, height);
     }
-
-    protected void getImageDimensions() {
+    public void getImageDimensions() {
 
         width = image.getWidth(null);
         height = image.getHeight(null);
@@ -41,5 +47,8 @@ public class Paddle {
 
     public Image getImage() {
         return image;
+    }
+    public void move() {
+        y += dy;
     }
 }
