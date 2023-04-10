@@ -6,6 +6,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class BrickBreakerPanel extends JPanel implements ActionListener {
 
@@ -63,7 +64,7 @@ public class BrickBreakerPanel extends JPanel implements ActionListener {
     public void paddleReset() {
         ball.interactable = true;
         paddle.x = (SCREEN_WIDTH / 2) - (paddle.width / 2);
-        paddle.y = SCREEN_HEIGHT - 30;
+        paddle.y = SCREEN_HEIGHT - 42;
         missilesActive = false;
         ballReset();
     }
@@ -89,17 +90,8 @@ public class BrickBreakerPanel extends JPanel implements ActionListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-
-
             drawObjects(g);
-
-
-
-
-
     }
-
     private void drawObjects(Graphics g) {
         if (newGame) {
             g.setColor(Color.WHITE);
@@ -122,17 +114,17 @@ public class BrickBreakerPanel extends JPanel implements ActionListener {
             g.drawString("Press [ENTER] to restart", SCREEN_WIDTH/2 - metrics2.stringWidth("Press [ENTER] to restart")/2, 340);
         }
         if (missilesActive) {
-            paddle.loadImage("src/resources/paddle_missiles_60.png");
+            paddle.loadImage("src/resources/paddle_missiles_"+paddle.width+".png");
 
             g.setColor(Color.WHITE);
             g.setFont(new Font("Consolas", Font.PLAIN, 20));
-            g.drawString("AMMO: ", 200, 20);
+            g.drawString("AMMO: ", 300, SCREEN_HEIGHT - 10);
             for (int i = 0; i < ammoCount; i++) {
-                g.drawImage(new ImageIcon("src/resources/missile.png").getImage(), 265 + i*10, 5,this);
+                g.drawImage(new ImageIcon("src/resources/missile.png").getImage(), 365 + i*10, SCREEN_HEIGHT - 25,this);
             }
         } else {
-            paddle.loadImage("src/resources/paddle_unarmed_60.png");
-            g.drawImage(new ImageIcon("src/resources/paddle_unarmed_60.png").getImage(), paddle.getX(), paddle.getY(),this);
+            paddle.loadImage("src/resources/paddle_unarmed_"+paddle.width+".png");
+//            g.drawImage(new ImageIcon("src/resources/paddle_unarmed_60.png").getImage(), paddle.getX(), paddle.getY(),this);
         }
         g.drawImage(paddle.getImage(), paddle.getX(), paddle.getY(),this);
         g.setColor(Color.WHITE);
@@ -206,8 +198,7 @@ public class BrickBreakerPanel extends JPanel implements ActionListener {
                 floatingTexts.add(new FloatingText(brick.getX() + 10, (int)brick.getY() + 15, 10, System.currentTimeMillis()));
                 if (brick.hp == 0) {
                     brick.setVisible(false);
-                    int id = 0; // dodać random
-                    bonuses.add(new Bonus(brick.x + brick.width/2 - 12, brick.y, id)); //?
+                    bonusSpawn(brick.x, brick.y, brick.width);
                 }
                 Rectangle intersectBallBrick = ball.getBounds().intersection(brick.getBounds());
                 if (intersectBallBrick.width > intersectBallBrick.height) {
@@ -256,8 +247,7 @@ public class BrickBreakerPanel extends JPanel implements ActionListener {
                     missile.setVisible(false);
                     if (brick.hp == 0) {
                         brick.setVisible(false);
-                        int id = 0; ///dodać random
-                        bonuses.add(new Bonus(brick.x + brick.width/2, brick.y, id));
+                        bonusSpawn(brick.x, brick.y, brick.width);
                     }
                 }
             }
@@ -266,8 +256,20 @@ public class BrickBreakerPanel extends JPanel implements ActionListener {
     public void collisionBonusPaddle() {
         for (Bonus bonus : bonuses) {
                 if (bonus.getBounds().intersects(paddle.getBounds())) {
-                    missilesActive = true;
-                    ammoCount = 10;
+                    switch (bonus.id) {
+                        case 0:
+                            missilesActive = true;
+                            ammoCount = 10;
+                            break;
+                        case 1:
+                            lives++;
+                            break;
+                        case 2:
+                            if (paddle.width < paddle.MAX_WIDTH) {
+                                paddle.width += 20;
+                            }
+                            break;
+                    }
                     score += 30;
                     floatingTexts.add(new FloatingText(paddle.x + 10, paddle.y + 15, 30, System.currentTimeMillis()));
                     bonus.setVisible(false);
@@ -406,11 +408,19 @@ public class BrickBreakerPanel extends JPanel implements ActionListener {
                 gameOver = true;
             } else {
                 ball.stick = true;
+                paddle.width = paddle.DEFAULT_WIDTH;
                 ball.dx = ball.DEFAULT_DX;
                 ball.dy = ball.DEFAULT_DY;
                 paddleReset();
             }
         }
+    }
+
+    public void bonusSpawn(int x, int y, int width) {
+        Random random = new Random();
+        int id = random.nextInt(3);
+        System.out.println("spawned: " + id);
+        bonuses.add(new Bonus(x + width/2 - 12, y, id));
     }
 }
 

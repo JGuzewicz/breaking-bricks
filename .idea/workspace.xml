@@ -5,13 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4bc7ba70-5be8-4919-b8cd-4813232f49e4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Bonus.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/FloatingText.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Missile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Brick.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Brick.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BrickBreakerGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/BrickBreakerGame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Bonus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Bonus.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BrickBreakerPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/BrickBreakerPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Paddle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Paddle.java" afterDir="false" />
     </list>
