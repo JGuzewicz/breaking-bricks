@@ -29,6 +29,8 @@ public class BrickBreakerPanel extends JPanel implements ActionListener {
     Paddle paddle = new Paddle(1, 1, 0);
     int missileSwitch = 0;
     long actionTime = 0L;
+    int guidelineX = SCREEN_WIDTH/2;
+    int guidelineY = 110;
 
     BrickBreakerPanel() {
         this.setBackground(Color.black);
@@ -157,6 +159,14 @@ public class BrickBreakerPanel extends JPanel implements ActionListener {
         }
         g.setColor(Color.GREEN);
         g.fillOval((int)ball.getX(), (int)ball.getY(), ball.radius*2, ball.radius*2);
+        if (ball.stick && running) {
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setColor(Color.yellow);
+            float[] dashingPattern = {1f, 8f};
+            Stroke stroke = new BasicStroke(2f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f, dashingPattern, 2.0f);
+            g2d.setStroke(stroke);
+            g2d.drawLine((int)ball.x + ball.radius, (int)ball.y + ball.radius, guidelineX, guidelineY);
+        }
     }
 
     public void move() {
@@ -215,7 +225,7 @@ public class BrickBreakerPanel extends JPanel implements ActionListener {
         if  (ball.getBounds().intersects(paddle.getBounds()) && ball.interactable) {
             Rectangle intersectBallPaddle = ball.getBounds().intersection(paddle.getBounds());
             if (intersectBallPaddle.width >= intersectBallPaddle.height && intersectBallPaddle.getY() <= paddle.y) {
-                double distance = (ball.x + ball.radius) - (paddle.x + (double) paddle.width / 2); //sprawdzam jak daleko od środka kładki uderza piłka
+                double distance = (ball.x + ball.radius) - (paddle.getX() + (double) paddle.width / 2); //sprawdzam jak daleko od środka kładki uderza piłka
                 double v = Math.sqrt(Math.pow(ball.dx,2) + Math.pow(ball.dy,2)); //predkosc pilki przed uderzeniem w kłądkę
                 ball.dx = (ball.DEFAULT_DX) * (double) distance / ((double) paddle.width / 2);
                 ball.dy = (Math.sqrt(Math.pow(v,2) - Math.pow(ball.dx,2)));
@@ -292,20 +302,29 @@ public class BrickBreakerPanel extends JPanel implements ActionListener {
                     } else if (!running) {
                         newGame();
                     }
-
                     break;
                 case KeyEvent.VK_LEFT:
-                    if (running) {
+                    if (running && !ball.stick) {
                         paddle.dx = -4;
-                        break;
+                    } else if (running && guidelineX > 0) {
+                        guidelineX -= 10;
                     }
+                    break;
                 case KeyEvent.VK_RIGHT:
-                    if (running) {
+                    if (running && !ball.stick) {
                         paddle.dx = 4;
-                        break;
+                    } else if (running && guidelineX < SCREEN_WIDTH) {
+                        guidelineX += 10;
                     }
+                    break;
                 case KeyEvent.VK_SPACE:
                     if (running) {
+                        if (ball.stick) {
+                            double v = Math.sqrt(Math.pow(ball.DEFAULT_DX, 2) + Math.pow(ball.DEFAULT_DY, 2));
+                            double c = Math.sqrt(Math.pow(guidelineX - ball.x - ball.radius, 2) + Math.pow(ball.y + ball.radius - guidelineY, 2));
+                            ball.dx = v * (guidelineX - ball.x - ball.radius) / c;
+                            ball.dy = (Math.sqrt(Math.pow(v, 2) - Math.pow(ball.dx, 2)));
+                        }
                         ball.stick = false;
                         long currentTime = System.currentTimeMillis();
                         if (missilesActive && currentTime - actionTime >= 100) {
@@ -324,9 +343,7 @@ public class BrickBreakerPanel extends JPanel implements ActionListener {
                             if (ammoCount == 0) {
                                 missilesActive = false;
                             }
-                    }
-
-
+                        }
                     }
                     break;
                 case KeyEvent.VK_ESCAPE:
@@ -403,6 +420,8 @@ public class BrickBreakerPanel extends JPanel implements ActionListener {
     public void checkDeath() {
         if (ball.y > SCREEN_HEIGHT) {
             lives--;
+            paddle.dx = 0;
+            guidelineX = SCREEN_WIDTH/2;
             if (lives == 0) {
                 running = false;
                 gameOver = true;
