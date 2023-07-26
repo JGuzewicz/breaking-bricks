@@ -14,6 +14,7 @@ public class Bonus {
     public Bonus(int x, int y, int id) {
         this.x = x;
         this.y = y;
+        this.id = id;
         visible = true;
         loadImage("src/resources/bonus_" + id + ".png");
         getImageDimensions();

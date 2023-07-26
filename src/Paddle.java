@@ -7,6 +7,8 @@ public class Paddle {
     protected int width;
     protected int height;
     protected Image image;
+    public final int MAX_WIDTH = 80;
+    public final int DEFAULT_WIDTH = 60;
 
     public Paddle(int x, int y, int dx) {
         this.x = x;
